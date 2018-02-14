@@ -27,7 +27,15 @@
 			<div class="form-group">
 				<div class="col-md-12">
 					@Html.DisplayNameFor(model => model.Vehicles.IsRegistered) :
-					@Html.DisplayFor(model => model.Vehicles.IsRegistered)
+					@*@Html.DisplayFor(model => model.Vehicles.IsRegistered)*@
+					@if (Model.Vehicles.IsRegistered)
+					{
+						<span>Yes</span>
+					}
+					else
+					{
+						<span>No</span>
+					}
 				</div>
 			</div>
 			<div class="form-group">
