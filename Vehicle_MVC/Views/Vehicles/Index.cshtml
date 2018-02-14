@@ -1,0 +1,67 @@
+﻿@model PagedList.IPagedList<Vehicle_MVC.Models.Vehicles>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "AddNew")
+</p>
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+	<p>
+		Find by Make: <br /><br />
+		@Html.DropDownList("makeSearch", new SelectList(ViewBag.Makes, "Id", "Name"), "Select Make", new { @class = "form-control", onchange = "this.form.submit()" })
+		<br />
+		@*<input type="submit" value="Search" />*@
+	</p>
+	<table class="table">
+		<tr>
+			<th>
+				@Html.ActionLink("Contact Name", "Index", new { sortOrder = ViewBag.SortingName, currentFilter = ViewBag.CurrentFilter })
+			
+			</th>
+			<th>
+				Make
+			</th>
+			<th>
+			   Model
+			</th>
+			<th>Action</th>
+		</tr>
+
+	@if (Model != null)
+	{
+		foreach (var item in Model) {
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.ContactName)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Model.Make.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Model.Name)
+				</td>
+				<td>
+					@Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+					@Html.ActionLink("Details", "Details", new { id=item.Id }) |
+					@Html.ActionLink("Delete", "Delete", new { id=item.Id },
+					new { onclick = "return confirm('Do you really want to delete the Vehicle " + item.ContactName + "?')" })
+				</td>
+			</tr>
+		}
+	}
+	</table>
+}
+
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+	new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

@@ -1,0 +1,104 @@
+﻿@model Vehicle_MVC.ViewModels.VehicleViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="form-horizontal">
+
+	<!-- Nav tabs -->
+	<ul class="nav nav-tabs" role="tablist" id="tab-list">
+		<li role="presentation" class="active col-md-3 "><a href="#first" aria-controls="first" role="tab" data-toggle="tab">User</a></li>
+		<li role="presentation" class="col-md-3"><a href="#second" aria-controls="second" role="tab" data-toggle="tab">Photo</a></li>
+	</ul>
+
+	<!-- Tab panes -->
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="first">
+			@*@Html.RenderAction("GetMyFirstForm", "MyController)*@
+			<h4>Basic</h4>
+			<div class="form-group">
+				<div class="col-md-12">
+					@Html.DisplayNameFor(model => model.Vehicles.Model.Make.Name) :
+					@Html.DisplayFor(model => model.Vehicles.Model.Make.Name)
+					@Html.HiddenFor(model => model.Vehicles.Model.Make.Id)
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-12">
+					@Html.DisplayNameFor(model => model.Vehicles.IsRegistered) :
+					@Html.DisplayFor(model => model.Vehicles.IsRegistered)
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-12">
+					@Html.DisplayNameFor(model => model.Vehicles.Model) :
+					@Html.DisplayFor(model => model.Vehicles.Model.Name)
+				</div>
+			</div>
+			<hr />
+			<h4>Features</h4>
+			<div class="form-group">
+				<div class="col-md-12">
+					@if (Model.Features.Count > 0)
+					{
+						foreach (var item in Model.Features)
+						{
+							@Html.DisplayFor(model => item.Name) <br />
+						}
+					}
+				</div>
+			</div>
+			<h4>Contact</h4>
+			<div class="form-group">
+				<div class="col-md-12">
+					@Html.DisplayNameFor(model => model.Vehicles.ContactName) : 
+					@Html.DisplayFor(model => model.Vehicles.ContactName)
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-12">
+					@Html.DisplayNameFor(model => model.Vehicles.ContactEmail) :
+					@Html.DisplayFor(model => model.Vehicles.ContactEmail)
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-12">
+					@Html.DisplayNameFor(model => model.Vehicles.ContactPhone) :
+					@Html.DisplayFor(model => model.Vehicles.ContactPhone)
+				</div>
+			</div>
+			<div class="control-label col-md-12">
+				<p>
+					@Html.ActionLink("Edit", "Edit", new { id = Model.Vehicles.Id }, new { @class = "btn btn-primary" }) 
+					@Html.ActionLink("Delete", "Delete", new { id = Model.Vehicles.Id }, new { @class = "btn btn-danger", onclick = "return confirm('Do you really want to delete the Vehicle ?')" })
+					@Html.ActionLink("Back to List", "Index",null, new { @class = "btn btn-success" })
+					
+				</p>
+			</div>
+		</div>
+		<div role="tabpanel" class="tab-pane" id="second">
+		<br />
+			@*@Html.RenderAction("GetMySecondForm", "MyController)*@
+			@using (Html.BeginForm("SaveFile", "Vehicles", FormMethod.Post, new { enctype = "multipart/form-data" }))
+			{
+				@Html.HiddenFor(model => model.Vehicles.Id)
+
+				<div class="col-md-12">
+					@Html.TextBox("txtUploadFile", "", new { type = "file", @class= "" }) <br />
+					@ViewBag.Message
+
+				</div>
+			}  
+			<div id="image-block">
+				@if (Model.photos != null && Model.photos.Count > 0)
+				{
+						foreach (var item in Model.photos) {
+							<img src="~/FileUpload/@item.FileName" style="width:500px;padding:20px"/> <br />
+						}
+				}
+			</div>
+		</div>
+	</div>
+
+</div>

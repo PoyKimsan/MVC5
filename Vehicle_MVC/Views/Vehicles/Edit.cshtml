@@ -1,0 +1,126 @@
+﻿@model Vehicle_MVC.ViewModels.VehicleViewModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Vehicles</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Vehicles.Id)
+
+		<div class="form-group">
+			<label class="control-label col-md-2">Make</label>
+			@Html.DropDownListFor(model => model.Vehicles.Model.Make.Id, new SelectList(ViewBag.Makes, "Id", "Name"), "Select Make", new { @class = "form-control" })
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-2">Model</label>
+			@Html.DropDownListFor(model => model.VehicleModels.Id, new SelectList(ViewBag.Models, "Id", "Name"), "Please Select Model", new { @class = "form-control" })
+			@Html.ValidationMessageFor(model => model.VehicleModels.Name)
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-2">Features</label>
+			<div class="col-md-10">
+
+				@*_context.Features.Where(f => seleted.Contains(f.Id)).ToList()*@
+
+				@for (int i = 0; i < Model.Features.Count; i++)
+				{
+					@Html.CheckBoxFor(x => Model.Features[i].isChecked)
+					@Html.DisplayFor(x => Model.Features[i].Name)
+					@Html.HiddenFor(x => Model.Features[i].Id)
+					<br />
+				}
+			</div>
+		</div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Vehicles.ContactName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Vehicles.ContactName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Vehicles.ContactName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Vehicles.ContactEmail, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Vehicles.ContactEmail, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Vehicles.ContactEmail, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Vehicles.ContactPhone, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Vehicles.ContactPhone, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Vehicles.ContactPhone, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Vehicles.IsRegistered, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(model => model.Vehicles.IsRegistered)
+                @Html.ValidationMessageFor(model => model.Vehicles.IsRegistered, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Vehicles.ModelId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Vehicles.ModelId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Vehicles.ModelId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+		
+		$("#Vehicles_Model_Make_Id").change(function () {
+			$("#VehicleModels_Id").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetVehicleModels")',
+
+                dataType: 'json',
+
+				data: { id: $("#Vehicles_Model_Make_Id").val() },
+				success: function (VehicleModels) {
+					$.each(VehicleModels, function (i, VehicleModels) {
+						$("#VehicleModels_Id").append('<option value="' + VehicleModels.Value + '">' +
+							VehicleModels.Text + '</option>');
+                    });
+                },
+                error: function (ex) {
+					alert('Failed to retrieve Vehicle Models.' + ex);
+				}
+
+			});
+            return false;
+		})
+
+    });
+
+</script>  
